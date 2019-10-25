@@ -1,16 +1,33 @@
 import SorterController from './classes/Sorter.js'
-
+import {SortList,genRandomArray} from './classes/Util.js'
 $().ready(async () => {
-    const mainController = new SorterController($("#list"));
-    const mainController2 = new SorterController($("#list2"));
-    const mainController3 = new SorterController($("#list3"));
-    const array = mainController.genRandomArray(100,0,100);
-    mainController2.setArray(new Array(...array));
-    mainController3.setArray(new Array(...array));
-    mainController.typeInExec = "Bubble Sort";
-    mainController2.typeInExec = "Insertion Sort";
-    mainController3.typeInExec = "Quick Sort";
-    mainController.bubbleSort();
-    mainController2.insertionSort();
-    mainController3.quickSort();
+    console.log($("#sort-algorithms input[type=checkbox]"))
+
+    const genDiv = () => {
+        const index = $("#display").children().length;
+        $("#display").append(`<div class="h-100 flex-fill d-flex align-items-end" style="min-width: 50%;background-color: black;" id="list${index}"></div>`);
+        return $(`#list${index}`);
+    }
+
+    let objects = new Array();
+    $("#runButton").click((e) => {
+        for (let i = 0; i < objects.length; i++) {
+            const element = objects[i];
+            element.cancel();
+        }
+        objects = new Array();
+        $("#display").empty();
+
+        const array = genRandomArray($("#numOfItems").val(),0 ,50);
+
+        objects = $("#sort-algorithms input[type=checkbox]:checked").map((i,element) => {
+            return new SorterController(genDiv(), SortList[element.id], new Array(...array));
+        });
+
+        for (let i = 0; i < objects.length; i++) {
+            const element = objects[i];
+            element.sort();
+        }
+    });
+
 });
