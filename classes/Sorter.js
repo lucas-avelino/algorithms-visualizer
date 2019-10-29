@@ -81,6 +81,39 @@ export class Sorter{
         }
         await this.render(this.array);
     }
+
+    mergeSort = async () => {
+        const merge = (leftArr, rightArr) => {
+            var sortedArr = [];
+            while (leftArr.length && rightArr.length) {
+                if (leftArr[0].value <= rightArr[0].value) {
+                    sortedArr.push(leftArr[0]);
+                    leftArr = leftArr.slice(1)
+                } else {
+                    sortedArr.push(rightArr[0]);
+                    rightArr = rightArr.slice(1)
+                }
+            }
+            while (leftArr.length)
+                sortedArr.push(leftArr.shift());
+            while (rightArr.length)
+                sortedArr.push(rightArr.shift());
+            this.render(sortedArr);
+            return sortedArr;
+        }
+        const mergeSortRecursive = (arr) => {
+            if (arr.length < 2) {
+                return arr; 
+            }else {
+                var midpoint = parseInt(arr.length / 2);
+                var leftArr   = arr.slice(0, midpoint);
+                var rightArr  = arr.slice(midpoint, arr.length);
+                return merge(mergeSortRecursive(leftArr), mergeSortRecursive(rightArr));
+            }
+        }
+        
+        mergeSortRecursive(this.array);
+    }
 }
 
 export default class SorterController extends Sorter{
@@ -100,6 +133,10 @@ export default class SorterController extends Sorter{
                 this.typeInExec = "Quick Sort";
                 this.sort = this.quickSort;
                 break;
+            case SortList.merge:
+                this.typeInExec = "Merge Sort";
+                this.sort = this.mergeSort;
+                break;
         }
         this.array = array;
         this.initialRender();
@@ -118,7 +155,7 @@ export default class SorterController extends Sorter{
         this.array.map((item,i) => {
             this.element.append(`<div val="${item.id}" class="bar-item bg-primary" style="color: white; order:${i}; height: ${unitHSize*item.value}px;width: ${colSize}%;"></div>`);
         });
-    } 
+    }
 
     render = async (lista, componenteAtual = -1, comparedElement = -1) => {
         await sleep(1);

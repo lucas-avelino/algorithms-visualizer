@@ -3,9 +3,10 @@ const sleep = (milliseconds) => {
 }
 
 const SortList = {
-    bubble:0,
-    insertion:1,
-    quick:2
+    bubble:     0,
+    insertion:  1,
+    quick:      2,
+    merge:      3
 }
 
 const genRandomArray = (numOfElements,min = 10, max = 1000) => {
