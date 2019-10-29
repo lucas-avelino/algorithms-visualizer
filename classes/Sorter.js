@@ -25,7 +25,6 @@ export class Sorter{
                 }
             }
         } catch (error) {
-            console.log("oi");
             return;
         }
         this.render(this.array);
@@ -36,7 +35,7 @@ export class Sorter{
             for (let i = 0; i < this.array.length; i++) {
                 const key = this.array[i]; 
                 let j = i - 1; 
-    
+                //this.render(this.array, i, j);
                 while (j >= 0 && this.array[j].value > key.value) { 
                     this.array[j + 1] = this.array[j]; 
                     j = j - 1; 
@@ -121,29 +120,26 @@ export default class SorterController extends Sorter{
         const colSize = 100*(w/this.array.length);
         const unitHSize = h/Math.max(...(this.array.map((a)=>a.value)));
         this.element.append(`<h4 class="" style="color:white;position: absolute;">${this.typeInExec}</h4>`);
-        // console.log({h,w,colSize,unitHSize});
         this.array.map((item,i) => {
-            this.element.append(`<div val="${item.id}" class="bar-item bg-primary" style="order:${i}; height: ${unitHSize*item.value}px;width: ${colSize}%;"></div>`);
+            this.element.append(`<div val="${item.id}" class="bar-item bg-primary" style="color: white; order:${i}; height: ${unitHSize*item.value}px;width: ${colSize}%;"></div>`);
         });
     } 
 
-    render = async (lista, componenteAtual = -1, comparedElement = -1) => {
-        // console.log(lista);
-        // const h = this.element.height();
-        // const w = this.element.width();
-        // const colSize = 100*(w/lista.length);
-        // const unitHSize = h/Math.max(...lista);
+    render = (lista, componenteAtual = -1, comparedElement = -1) => {
+        $(".bar-item.bg-danger").map((i,item)=>{
+            $(item).removeClass("bg-danger");
+        });
+        $(".bar-item.bg-secondary").map((i,item)=>{
+            $(item).removeClass("bg-secondary");
+        })
 
-        // // this.element.empty();
-        // // this.element.append(`<h4 class="" style="color:white;position: absolute;">${this.typeInExec}</h4>`);
-        // // $("#bar-item").map((i,item)=>{
-        // //     $()
-        // // });
-        // console.log(this.typeInExec, lista);
-        
         lista.map((item,i) => {
             this.element.children(`.bar-item[val=${item.id}]`).css({"order": i});
-        //     // this.element.append(`<div order="" class="${componenteAtual==i?"bg-danger": comparedElement == i?"bg-success" :"bg-primary"}" style="height: ${unitHSize*item}px;width: ${colSize}%;"></div>`);
+            if(i == componenteAtual){
+                this.element.children(`.bar-item[val=${item.id}]`).addClass("bg-danger");
+            }else if(i == comparedElement){
+                this.element.children(`.bar-item[val=${item.id}]`).addClass("bg-secondary");
+            }
         });
 
     }
