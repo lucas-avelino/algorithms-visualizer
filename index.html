@@ -43,13 +43,12 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <div class="form-group mr-2">
-                    <label for="numOfItems">Number of elements</label>
+                <div class="form-group mr-2" style="width: 300px;" >
+                    <label for="numOfItems" class="d-flex justify-items-around w-100">
+                        <span class="w-75">Number of elements: </span> 
+                        <span class="ml-3 w-25">30</span></label>
                     <input type="range" value="30" min="0" max="500" class="form-control-range" id="numOfItems" />
                 </div>
-                <!-- <div class="form-group">
-                    <input class="field" type="number" id="numOfItems" placeholder="Quantidade de Items" />
-                </div> -->
                 <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="runButton">
                     Run
                 </button>
@@ -57,12 +56,7 @@
         </div>
     </nav>
     <div class="container flex-wrap d-flex w-100 flex-wrap h-50 mt-4" id="display">
-        <!-- <div class="h-100 w-50 d-flex align-items-end" style="background-color: black;" id="list"></div>
-        <div class="h-100 w-50 d-flex align-items-end" style="background-color: black;" id="list2"></div>
-        <div class="h-100 w-50 d-flex align-items-end" style="background-color: black;" id="list3"></div>
-        <div class="h-100 w-50 d-flex align-items-end" style="background-color: black;" id="list4"></div> -->
     </div>
-
     <script src="main.js" type="module"></script>
 </body>
 

@@ -20,14 +20,13 @@ export class Sorter{
                         this.array[j] = this.array[j+1];
                         this.array[j+1] = aux;
                     }
-                    await sleep(10);
-                    this.render(this.array, [i], [j+1]);
+                    await this.render(this.array, [i], [j+1]);
                 }
             }
         } catch (error) {
             return;
         }
-        this.render(this.array);
+        await this.render(this.array);
     } 
 
     insertionSort = async () => {
@@ -35,12 +34,10 @@ export class Sorter{
             for (let i = 0; i < this.array.length; i++) {
                 const key = this.array[i]; 
                 let j = i - 1; 
-                //this.render(this.array, i, j);
                 while (j >= 0 && this.array[j].value > key.value) { 
                     this.array[j + 1] = this.array[j]; 
                     j = j - 1; 
-                    await sleep(10);
-                    this.render(this.array, i, j);
+                    await this.render(this.array, i, j);
                 }
                 this.array[j + 1] = key; 
             }
@@ -69,22 +66,20 @@ export class Sorter{
                         this.array[j] = aux;
                         i++;
                     }
-                    await sleep(10);
-                    this.render(this.array, i, j);
+                    await this.render(this.array, i, j);
                 }
                 
                 const aux = this.array[i];
                 this.array[i] = this.array[hi];
                 this.array[hi] = aux;
-                await sleep(10);
-                this.render(this.array, i, hi);
+                await this.render(this.array, i, hi);
                 return i
             }
             await quick(this.array, 0, this.array.length-1);
         } catch (error) {
             return;
         }
-        this.render(this.array);
+        await this.render(this.array);
     }
 }
 
@@ -116,16 +111,17 @@ export default class SorterController extends Sorter{
 
     initialRender = async () => {
         const h = this.element.height();
-        const w = this.element.width();
-        const colSize = 100*(w/this.array.length);
+        // const w = this.element.width();
+        const colSize = 100 / this.array.length;
         const unitHSize = h/Math.max(...(this.array.map((a)=>a.value)));
-        this.element.append(`<h4 class="" style="color:white;position: absolute;">${this.typeInExec}</h4>`);
+        this.element.append(`<h4 style="color:white;position: absolute; top: 0; left: 2px;">${this.typeInExec}</h4>`);
         this.array.map((item,i) => {
             this.element.append(`<div val="${item.id}" class="bar-item bg-primary" style="color: white; order:${i}; height: ${unitHSize*item.value}px;width: ${colSize}%;"></div>`);
         });
     } 
 
-    render = (lista, componenteAtual = -1, comparedElement = -1) => {
+    render = async (lista, componenteAtual = -1, comparedElement = -1) => {
+        await sleep(1);
         $(".bar-item.bg-danger").map((i,item)=>{
             $(item).removeClass("bg-danger");
         });
