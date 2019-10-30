@@ -4,11 +4,21 @@ import {SortList} from './Util.js'
 
 export class Sorter{
 
+    constructor(){
+        setInterval(()=>{this.renderAsync()},0.25);
+    }
+
     setArray = (array) =>{
         this.array = array;
     }
 
     render = (a,b,c) => {} 
+
+    ordered = false;
+
+    renderPool = [
+        
+    ]
 
     bubbleSort = async () => {
         try {
@@ -52,9 +62,11 @@ export class Sorter{
             const quick = async (array, lo, hi) => {
                 if(lo < hi){
                     let p = await particiona(array, lo, hi)
-                    quick(array, lo, p - 1)
-                    quick(array, p + 1, hi)
+                    // await sleep(1);
+                    await quick(array, lo, p - 1)
+                    await quick(array, p + 1, hi)
                 }
+                // console.log("end aaa")
             }
             const particiona = async (array, lo, hi) => {
                 let pivot = array[hi];
@@ -66,20 +78,33 @@ export class Sorter{
                         this.array[j] = aux;
                         i++;
                     }
-                    await this.render(this.array, i, j);
+                    this.renderPool.push({time: Date.now(), array: [...this.array]});
+                    // await this.render(this.array, i, j);
                 }
                 
                 const aux = this.array[i];
                 this.array[i] = this.array[hi];
                 this.array[hi] = aux;
-                await this.render(this.array, i, hi);
+                this.renderPool.push({time: Date.now(), array: this.array});
+                
                 return i
             }
+            // setInterval(console.log("A"),100)
+            // let repeatHandler = setInterval(() => {
+            //     // this.renderAsync(this.array);
+            //     console.log("oi");
+            // }, .5);
+            console.log(Date.now());
             await quick(this.array, 0, this.array.length-1);
+            console.log(Date.now());
+            // console.log(this.renderPool);
+            // console.log("aaa")
+            // setTimeout(() => {clearInterval(repeatHandler)},10000)
         } catch (error) {
             return;
         }
-        await this.render(this.array);
+        // this.render(this.array);
+        
     }
 
     mergeSort = async () => {
@@ -144,6 +169,7 @@ export default class SorterController extends Sorter{
 
     cancel = () => {
         this.array = null;
+        this.renderPool = [];
     }
 
     initialRender = async () => {
@@ -155,6 +181,29 @@ export default class SorterController extends Sorter{
         this.array.map((item,i) => {
             this.element.append(`<div val="${item.id}" class="bar-item bg-primary" style="color: white; order:${i}; height: ${unitHSize*item.value}px;width: ${colSize}%;"></div>`);
         });
+    }
+
+    renderAsync = async (lista, componenteAtual = -1, comparedElement = -1) => {
+        if(this.renderPool.length == 0) return 0;
+        const frame = this.renderPool.shift();
+        // console.log(this.renderPool, frame);
+        // // await sleep(1);
+        // $(".bar-item.bg-danger").map((i,item)=>{
+        //     $(item).removeClass("bg-danger");
+        // });
+        // $(".bar-item.bg-secondary").map((i,item)=>{
+        //     $(item).removeClass("bg-secondary");
+        // })
+
+        frame.array.map((item,i) => {
+            this.element.children(`.bar-item[val=${item.id}]`).css({"order": i});
+            if(i == componenteAtual){
+                this.element.children(`.bar-item[val=${item.id}]`).addClass("bg-danger");
+            }else if(i == comparedElement){
+                this.element.children(`.bar-item[val=${item.id}]`).addClass("bg-secondary");
+            }
+        });
+
     }
 
     render = async (lista, componenteAtual = -1, comparedElement = -1) => {
