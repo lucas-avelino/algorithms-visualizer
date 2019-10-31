@@ -30,8 +30,9 @@ const tranformEventsInRenderFrames = (eventPool, frameRate, sizeOfAnimation) => 
     // console.log("tranformEventsInRenderFrames");
     // try{
     const numberOfEvents = eventPool.length;
-    const numberOfFrames = (sizeOfAnimation * frameRate) / 1000;
+    let numberOfFrames = (sizeOfAnimation * frameRate) / 1000 ;
     const numberOfEventsPerFrame = (numberOfEvents/numberOfFrames) | 0;
+    numberOfFrames = numberOfFrames > numberOfEvents? numberOfEvents: numberOfFrames;
     // console.log(eventPool);
     let frames = [];
     for (let i = numberOfEventsPerFrame; i <= numberOfEvents+numberOfEventsPerFrame; i+=numberOfEventsPerFrame) {
@@ -39,7 +40,7 @@ const tranformEventsInRenderFrames = (eventPool, frameRate, sizeOfAnimation) => 
          frames.push(mergeEvents(eventPool.slice(i - (numberOfEventsPerFrame),i)));
         //
     }
-    // console.log("frames",frames)
+    console.log("frames",frames)
     // }catch(err){
         // console.error(err);
     // }

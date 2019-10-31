@@ -66,6 +66,7 @@ export class Sorter{
         try {
             const quick = async (array, lo, hi) => {
                 if(lo < hi){
+                    console.log("a");
                     let p = await particiona(array, lo, hi)
                     await quick(array, lo, p - 1)
                     await quick(array, p + 1, hi)
@@ -82,15 +83,15 @@ export class Sorter{
                         this.array[j] = aux;
                         i++;
                         // console.log(arrayDiff([...this.array], arrayHoldedState));
-                        this.eventPool.push(arrayDiff([...this.array], arrayHoldedState));
                         arrayHoldedState = [...array];
                     }
+                    this.eventPool.push(arrayDiff(this.array, arrayHoldedState));
                 }
                 // arrayDiff([...this.array]);
                 const aux = this.array[i];
                 this.array[i] = this.array[hi];
                 this.array[hi] = aux;
-                this.eventPool.push(arrayDiff([...this.array], arrayHoldedState));
+                this.eventPool.push(arrayDiff(this.array, arrayHoldedState));
                 arrayHoldedState = [...array];
                 return i
             }
@@ -101,6 +102,7 @@ export class Sorter{
             return 0;
         }
         this.ms = this.timeInExec * 1500;
+        console.log("this.timeInExe",this.timeInExec);
         // console.log("exec",this.timeInExec);
         // console.log("a")
         this.renderFrames = tranformEventsInRenderFrames(this.eventPool, 30, this.ms || 1000);
@@ -189,7 +191,7 @@ export default class SorterController extends Sorter{
     }
 
     renderAsync = async (lista, componenteAtual = -1, comparedElement = -1) => {
-        console.log("render...");
+        console.log("render...",this.renderFrames);
         if(this.renderFrames == null || this.renderFrames.length == 0) return 0;
         // console.log([...this.renderFrames]);
         const frame = this.renderFrames.shift();
