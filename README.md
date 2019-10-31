@@ -7,15 +7,20 @@ You can test the "web aplication" on the link bellow:
 [GitHub WebSite](https://lucasavelino0509.github.io/algorithms-visualizer/)
 
 ## TODO
+ - Features:
+	- [ ] Make the arrays editable for users;
+
  - Improvements:
-	- [X] interface and render function;
-	- [ ] New async render function;
+	- [X] [UX] Interface and render function;
+	- [ ] [Rendering] New async render function;
+  
  - Sort algorithms:
 	- [x] Bubble;
 	- [x] Quick;
 	- [x] Insertion;
-	- [X]  Merge;
+	- [X] Merge;
 	- [ ] Cocktail;
+
 - Maze solving algorithm:
 	- [ ] Shortest path;
 	- [ ] Maze-routing;
