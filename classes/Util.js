@@ -19,7 +19,21 @@ const genRandomArray = (numOfElements,min = 10, max = 1000) => {
     return finalArray;
 }
 
+const arrayDiff = (left, right) => {
+    const qtdElements = left.length;
+    let diff = [];
+    // console.log("aa:; ",left, right);
+    for (let i = 0; i < qtdElements; i++) {
+        // console.log( i, left[i], right[i], left[i] == right[i]);
+        if(left[i] != right[i]){
+            diff.push(left[i]);
+        }else{
+            diff.push(null);
+        }
+    }
+    // console.log(diff)
+    return diff;
+}
 
-
-export {SortList, genRandomArray};
+export {SortList, genRandomArray, arrayDiff};
 export default sleep;
