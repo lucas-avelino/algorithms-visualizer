@@ -19,21 +19,38 @@ const genRandomArray = (numOfElements,min = 10, max = 1000) => {
     return finalArray;
 }
 
-const arrayDiff = (left, right) => {
-    const qtdElements = left.length;
-    let diff = [];
-    // console.log("aa:; ",left, right);
-    for (let i = 0; i < qtdElements; i++) {
-        // console.log( i, left[i], right[i], left[i] == right[i]);
-        if(left[i] != right[i]){
-            diff.push(left[i]);
-        }else{
-            diff.push(null);
+const CreateEvent = (initialState, endState) => {
+    let diff = {};
+    for (const key in initialState) {
+        if(initialState[key] != endState[key]){
+            diff[key] = endState[key];
         }
     }
-    // console.log(diff)
     return diff;
 }
 
-export {SortList, genRandomArray, arrayDiff};
+// Object.prototype.equals = function(x)
+// {
+//     for(p in this)
+//     {
+//         switch(typeof(this[p]))
+//         {
+//             case 'object':
+//                 if (!this[p].equals(x[p])) { return false }; break;
+//             case 'function':
+//                 if (typeof(x[p])=='undefined' || (p != 'equals' && this[p].toString() != x[p].toString())) { return false; }; break;
+//             default:
+//                 if (this[p] != x[p]) { return false; }
+//         }
+//     }
+
+//     for(p in x)
+//     {
+//         if(typeof(this[p])=='undefined') {return false;}
+//     }
+
+//     return true;
+// }
+
+export {SortList, genRandomArray, CreateEvent};
 export default sleep;

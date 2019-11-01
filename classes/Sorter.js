@@ -1,16 +1,12 @@
 
 import sleep from './Util.js'
-import {SortList, arrayDiff} from './Util.js'
+import {SortList, CreateEvent} from './Util.js'
 import tranformEventsInRenderFrames from './Render.js'
 
 export class Sorter{
 
     constructor(){
         
-    }
-
-    setArray = (array) =>{
-        this.array = array;
     }
 
     render = (a,b,c) => {} 
@@ -62,54 +58,53 @@ export class Sorter{
         this.render(this.array);
     }
 
-    quickSort = async () => {
+    quickSort = () => {
         try {
-            const quick = async (array, lo, hi) => {
+            const quick = (lo, hi) => {
                 if(lo < hi){
-                    console.log("a");
-                    let p = await particiona(array, lo, hi)
-                    await quick(array, lo, p - 1)
-                    await quick(array, p + 1, hi)
+                    let p = particiona(lo, hi)
+                    quick(lo, p - 1)
+                    quick(p + 1, hi)
                 }
             }
-            const particiona = async (array, lo, hi) => {
-                let pivot = array[hi];
-                let arrayHoldedState = [...array];
+            const particiona = (lo, hi) => {
+                let pivot = this.array[hi];
+                let arrayHoldedState = {...this.array};
                 let i = lo;
                 for (let j = lo; j <= hi; j++) {
-                    if(array[j].value < pivot.value){
+                    if(this.array[j].value < pivot.value){
                         const aux = this.array[i];
                         this.array[i] = this.array[j];
                         this.array[j] = aux;
                         i++;
-                        // console.log(arrayDiff([...this.array], arrayHoldedState));
-                        arrayHoldedState = [...array];
                     }
-                    this.eventPool.push(arrayDiff(this.array, arrayHoldedState));
+                    this.eventPool.push(CreateEvent(arrayHoldedState, {...this.array}));
+                    arrayHoldedState = [...this.array];
                 }
-                // arrayDiff([...this.array]);
                 const aux = this.array[i];
                 this.array[i] = this.array[hi];
                 this.array[hi] = aux;
-                this.eventPool.push(arrayDiff(this.array, arrayHoldedState));
-                arrayHoldedState = [...array];
+                this.eventPool.push(CreateEvent(arrayHoldedState, {...this.array}));
+                arrayHoldedState = {...this.array};
                 return i
             }
             this.timeInExec = -Date.now();
-            await quick(this.array, 0, this.array.length-1);
+            quick(0, this.array.length-1);
             this.timeInExec += Date.now();
         } catch (error) {
             return 0;
         }
         this.ms = this.timeInExec * 1500;
-        console.log("this.timeInExe",this.timeInExec);
         // console.log("exec",this.timeInExec);
         // console.log("a")
         this.renderFrames = tranformEventsInRenderFrames(this.eventPool, 30, this.ms || 1000);
-        let renderLoop = this.renderLoop(1000/30);
+        console.log("this.timeInExe",this.timeInExec);
+        console.log("this.eventPool",JSON.stringify(this.eventPool.filter((a) => JSON.stringify(a) != "{}")))
+        console.log("this.renderFrames",this.renderFrames.filter((a) => JSON.stringify(a) != "{}"))
+        let renderLoop = this.renderLoop(1000/32);
         setTimeout(() => {
-            clearInterval(renderLoop);
-        }, (this.ms*1.9)|0)
+            // clearInterval(renderLoop);
+        }, (this.ms*1.1)|0)
         // this.render(this.array);
         
     }
@@ -147,6 +142,8 @@ export class Sorter{
         mergeSortRecursive(this.array);
     }
 }
+// 1: {value: 12, id: 2}
+// 2: {value: 24, id: 1}
 
 export default class SorterController extends Sorter{
     constructor(div, sort, array){
@@ -184,6 +181,8 @@ export default class SorterController extends Sorter{
         // const w = this.element.width();
         const colSize = 100 / this.array.length;
         const unitHSize = h/Math.max(...(this.array.map((a)=>a.value)));
+
+        console.log([...this.array]);
         this.element.append(`<h4 style="color:white;position: absolute; top: 0; left: 2px;">${this.typeInExec}</h4>`);
         this.array.map((item,i) => {
             this.element.append(`<div val="${item.id}" class="bar-item bg-primary" style="color: white; order:${i}; height: ${unitHSize*item.value}px;width: ${colSize}%;"></div>`);
@@ -191,30 +190,15 @@ export default class SorterController extends Sorter{
     }
 
     renderAsync = async (lista, componenteAtual = -1, comparedElement = -1) => {
-        console.log("render...",this.renderFrames);
-        if(this.renderFrames == null || this.renderFrames.length == 0) return 0;
-        // console.log([...this.renderFrames]);
+        // console.log("render...");
+        if(this.renderFrames == null || this.renderFrames == []) return 0;
         const frame = this.renderFrames.shift();
-        // console.log(this.eventPool, frame);
-        // // await sleep(1);
-        // $(".bar-item.bg-danger").map((i,item)=>{
-        //     $(item).removeClass("bg-danger");
-        // });
-        // $(".bar-item.bg-secondary").map((i,item)=>{
-        //     $(item).removeClass("bg-secondary");
-        // })
-
-        frame.map((item,i) => {
-            if(item==null) 
-                return 0;
-            this.element.children(`.bar-item[val=${item.id}]`).css({"order": i});
-            if(i == componenteAtual){
-                this.element.children(`.bar-item[val=${item.id}]`).addClass("bg-danger");
-            }else if(i == comparedElement){
-                this.element.children(`.bar-item[val=${item.id}]`).addClass("bg-secondary");
+        if(frame != {}){
+            for (const key in frame) {
+                console.log("frame", frame);
+                this.element.children(`.bar-item[val=${frame[key].id}]`).css({"order": key});
             }
-        });
-
+        }
     }
 
     // render = async (lista, componenteAtual = -1, comparedElement = -1) => {
