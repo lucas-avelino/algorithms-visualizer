@@ -4,13 +4,7 @@ import {SortList, CreateEvent, EventType} from './Util.js'
 import tranformEventsInRenderFrames from './Render.js'
 
 export class Sorter{
-
-    constructor(){
-
-    }
-
-    render = (a,b,c) => {} 
-
+    
     ordered = false;
 
     eventPool = [];
@@ -24,11 +18,10 @@ export class Sorter{
     }
 
     renderLoop = (time) => {
-        return setInterval(async () => {this.renderAsync()},time);
+        return setInterval(async () => {this.render()}, time);
     }
 
     bubbleSort = async () => {
-        
         try {
             let arrayHoldedState = [...this.array];
             for (let i = 0; i < this.array.length; i++) {
@@ -40,7 +33,6 @@ export class Sorter{
                         this.addEvent(arrayHoldedState, {...this.array}, EventType.Movement);
                     }
                     arrayHoldedState = [...this.array];
-                    // await this.render(this.array, [i], [j+1]);
                 }
             }
         } catch (error) {
@@ -65,12 +57,10 @@ export class Sorter{
                         this.array[j + 1] = this.array[j]; 
                         j = j - 1; 
                         this.addEvent(arrayHoldedState, {...this.array}, EventType.Movement);
-                        // this.eventPool.push(CreateEvent());
                         arrayHoldedState = [...this.array];
                     }
                     this.array[j + 1] = key; 
                     this.addEvent(arrayHoldedState, {...this.array}, EventType.Movement);
-                    // this.eventPool.push(CreateEvent(arrayHoldedState, {...this.array}, EventType.Movement));
                     arrayHoldedState = [...this.array];
                 }
             } catch (error) {
@@ -85,7 +75,7 @@ export class Sorter{
         this.renderLoopHandler = this.renderLoop(1000 / this.frameRate);
     }
 
-    quickSort = () => {
+    quickSort = async () => {
         try {
             const quick = (lo, hi) => {
                 if(lo < hi){
@@ -127,18 +117,17 @@ export class Sorter{
                 return i
             }
             this.timeInExec -= performance.now();
-            quick(0, this.array.length-1);
+            await quick(0, this.array.length-1);
             this.timeInExec += performance.now();
         } catch (error) {
             return 0;
         }
-        console.log("timeInExec quick: ",this.timeInExec);
         this.ms = this.timeInExec * 1000;
         this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
         this.renderLoopHandler = this.renderLoop(1000/this.frameRate);
     }
 
-    mergeSort = () => {
+    mergeSort = async () => {
         const merge = (leftArr, rightArr) => {
             var sortedArr = [];
 
@@ -156,7 +145,6 @@ export class Sorter{
             while (rightArr.length)
                 sortedArr.push(rightArr.shift());
             
-                // this.eventPool.push({time: Date.now(), array: sortedArr});
                 return sortedArr;
             }
             const mergeSortRecursive = (arr) => {
@@ -178,9 +166,8 @@ export class Sorter{
             }
         }
         this.timeInExec -= performance.now();
-        mergeSortRecursive(this.array);
+        await mergeSortRecursive(this.array);
         this.timeInExec += performance.now();
-        console.log("timeInExec merge: ",this.timeInExec);
         this.ms = this.timeInExec * 1000;
         this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
         this.renderLoopHandler = this.renderLoop(1000 / this.frameRate);
@@ -223,47 +210,22 @@ export default class SorterController extends Sorter{
 
     initialRender = async () => {
         const h = this.element.height();
-        // const w = this.element.width();
         const colSize = 100 / this.array.length;
         const unitHSize = h/Math.max(...(this.array.map((a)=>a.value)));
 
-        // console.log([...this.array]);
         this.element.append(`<h4 style="color:white;position: absolute; top: 0; left: 2px;">${this.typeInExec}</h4>`);
         this.array.map((item,i) => {
             this.element.append(`<div val="${item.id}" class="bar-item bg-primary" style="color: white; order:${i}; height: ${unitHSize*item.value}px;width: ${colSize}%;"></div>`);
         });
     }
 
-    renderAsync = async (lista, componenteAtual = -1, comparedElement = -1) => {
-        // console.log("render...", this.renderFrames.length);
+    render = async () => {
         if(this.renderFrames == null || this.renderFrames == [] || !this.renderFrames[0]) clearInterval(this.renderLoopHandler);
         const frame = this.renderFrames.shift();
         if(JSON.stringify(frame) != "{}"){
-            // console.log("frame", frame);
             for (const key in frame) {
                 this.element.children(`.bar-item[val=${frame[key].id}]`).css({"order": key});
             }
         }
     }
-
-    // render = async (lista, componenteAtual = -1, comparedElement = -1) => {
-    //     await sleep(1);
-    //     $(".bar-item.bg-danger").map((i,item)=>{
-    //         $(item).removeClass("bg-danger");
-    //     });
-    //     $(".bar-item.bg-secondary").map((i,item)=>{
-    //         $(item).removeClass("bg-secondary");
-    //     })
-
-    //     lista.map((item,i) => {
-    //         this.element.children(`.bar-item[val=${item.id}]`).css({"order": i});
-    //         if(i == componenteAtual){
-    //             this.element.children(`.bar-item[val=${item.id}]`).addClass("bg-danger");
-    //         }else if(i == comparedElement){
-    //             this.element.children(`.bar-item[val=${item.id}]`).addClass("bg-secondary");
-    //         }
-    //     });
-
-    // }
-    
 }
