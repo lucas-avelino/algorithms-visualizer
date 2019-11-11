@@ -6,7 +6,7 @@ import tranformEventsInRenderFrames from './Render.js'
 export class Sorter{
 
     constructor(){
-        
+
     }
 
     render = (a,b,c) => {} 
@@ -28,22 +28,30 @@ export class Sorter{
     }
 
     bubbleSort = async () => {
+        
         try {
+            let arrayHoldedState = [...this.array];
             for (let i = 0; i < this.array.length; i++) {
-
                 for(let j = 0; j < this.array.length-i; j++){
                     if( this.array[i] && this.array[j+1] && this.array[j].value > this.array[j+1].value){
                         const aux = this.array[j];
                         this.array[j] = this.array[j+1];
                         this.array[j+1] = aux;
+                        this.addEvent(arrayHoldedState, {...this.array}, EventType.Movement);
                     }
-                    await this.render(this.array, [i], [j+1]);
+                    arrayHoldedState = [...this.array];
+                    // await this.render(this.array, [i], [j+1]);
                 }
             }
         } catch (error) {
             return;
         }
+        this.timeInExec = -performance.now();
         await this.render(this.array);
+        this.timeInExec += performance.now();
+        this.ms = this.timeInExec * 1000;
+        this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
+        this.renderLoopHandler = this.renderLoop(1000 / this.frameRate);
     } 
 
     insertionSort = async () => {
@@ -69,9 +77,9 @@ export class Sorter{
                 return;
             }
         }
-        this.timeInExec = -Date.now();
+        this.timeInExec = -performance.now();
         insertion();
-        this.timeInExec += Date.now();
+        this.timeInExec += performance.now();
         this.ms = this.timeInExec * 1000;
         this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
         this.renderLoopHandler = this.renderLoop(1000 / this.frameRate);
@@ -88,30 +96,39 @@ export class Sorter{
             }
             const particiona = (lo, hi) => {
                 let pivot = this.array[hi];
+                this.timeInExec += performance.now();
                 let arrayHoldedState = {...this.array};
+                this.timeInExec -= performance.now();
                 let i = lo;
                 for (let j = lo; j <= hi; j++) {
                     if(this.array[j].value < pivot.value){
                         const aux = this.array[i];
                         this.array[i] = this.array[j];
                         this.array[j] = aux;
+                        // console.time("[add-event][118]");
+                        this.timeInExec += performance.now();
                         this.addEvent(arrayHoldedState, {...this.array}, EventType.Movement);
-                        // this.eventPool.push(CreateEvent(arrayHoldedState, {...this.array}, EventType.Movement));
                         arrayHoldedState = [...this.array];
+                        this.timeInExec -= performance.now()+0.001;
+                        // console.timeEnd("[add-event][118]");
                         i++;
                     }
                 }
                 const aux = this.array[i];
                 this.array[i] = this.array[hi];
                 this.array[hi] = aux;
+                this.timeInExec += performance.now();
                 this.addEvent(arrayHoldedState, {...this.array}, EventType.Movement);
+                // console.time("[add-event][118]");
+                this.timeInExec -= performance.now()+0.001;
+                // console.timeEnd("[add-event][118]");
                 // this.eventPool.push(CreateEvent(arrayHoldedState, {...this.array}, EventType.Movement));
-                arrayHoldedState = {...this.array};
+                // arrayHoldedState = {...this.array};
                 return i
             }
-            this.timeInExec = -Date.now();
+            this.timeInExec -= performance.now();
             quick(0, this.array.length-1);
-            this.timeInExec += Date.now();
+            this.timeInExec += performance.now();
         } catch (error) {
             return 0;
         }
@@ -119,9 +136,6 @@ export class Sorter{
         this.ms = this.timeInExec * 1000;
         this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
         this.renderLoopHandler = this.renderLoop(1000/this.frameRate);
-        
-        // this.render(this.array);
-        
     }
 
     mergeSort = () => {
@@ -163,9 +177,9 @@ export class Sorter{
                     
             }
         }
-        this.timeInExec = -Date.now();
+        this.timeInExec -= performance.now();
         mergeSortRecursive(this.array);
-        this.timeInExec += Date.now();
+        this.timeInExec += performance.now();
         console.log("timeInExec merge: ",this.timeInExec);
         this.ms = this.timeInExec * 1000;
         this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
@@ -196,7 +210,9 @@ export default class SorterController extends Sorter{
                 break;
         }
         this.array = array;
+        this.timeInExec = 0;
         this.initialRender();
+        
     }
 
     cancel = () => {
@@ -211,7 +227,7 @@ export default class SorterController extends Sorter{
         const colSize = 100 / this.array.length;
         const unitHSize = h/Math.max(...(this.array.map((a)=>a.value)));
 
-        console.log([...this.array]);
+        // console.log([...this.array]);
         this.element.append(`<h4 style="color:white;position: absolute; top: 0; left: 2px;">${this.typeInExec}</h4>`);
         this.array.map((item,i) => {
             this.element.append(`<div val="${item.id}" class="bar-item bg-primary" style="color: white; order:${i}; height: ${unitHSize*item.value}px;width: ${colSize}%;"></div>`);
@@ -219,11 +235,11 @@ export default class SorterController extends Sorter{
     }
 
     renderAsync = async (lista, componenteAtual = -1, comparedElement = -1) => {
-        console.log("render...", this.renderFrames.length);
+        // console.log("render...", this.renderFrames.length);
         if(this.renderFrames == null || this.renderFrames == [] || !this.renderFrames[0]) clearInterval(this.renderLoopHandler);
         const frame = this.renderFrames.shift();
         if(JSON.stringify(frame) != "{}"){
-            console.log("frame", frame);
+            // console.log("frame", frame);
             for (const key in frame) {
                 this.element.children(`.bar-item[val=${frame[key].id}]`).css({"order": key});
             }
