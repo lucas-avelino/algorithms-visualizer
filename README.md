@@ -8,12 +8,14 @@ You can test the "web aplication" on the link bellow:
 
 ## TODO
  - Features:
-	- [ ] Make the arrays editable for users;
+	- [ ] [Sorters] Make the arrays editable for users;
+	- [ ] [Sorters] Make the time line bar for user control the render;
 
  - Improvements:
 	- [X] [UX] Interface and render function;
-	- [ ] [Rendering] New async render function;
-  
+	- [X] [Rendering] New async render function;
+	- [ ] [Rendering] Merge sort are with a strange render
+
  - Sort algorithms:
 	- [x] Bubble;
 	- [x] Quick;
