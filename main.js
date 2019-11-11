@@ -22,16 +22,17 @@ $().ready(async () => {
         const array = genRandomArray($("#numOfItems").val(),0 ,50);
 
         objects = $("#sort-algorithms input[type=checkbox]:checked").map((i,element) => {
-            return new SorterController(genDiv(), SortList[element.id], 
+            return (new SorterController(genDiv(), SortList[element.id], 
                     array.map((el) => {
                         return {...el}
                     })
-            );
+            ).sort());
         });
 
         for (let i = 0; i < objects.length; i++) {
             const element = objects[i];
-            element.sort();
+            console.log(element);
+            element.renderLoop(1000/30);
         }
     });
 

@@ -17,11 +17,8 @@ export class Sorter{
         this.eventPool.push(CreateEvent(a, b, c));
     }
 
-    renderLoop = (time) => {
-        return setInterval(async () => {this.render()}, time);
-    }
-
-    bubbleSort = async () => {
+    bubbleSort = () => {
+        this.timeInExec = -performance.now();
         try {
             let arrayHoldedState = [...this.array];
             for (let i = 0; i < this.array.length; i++) {
@@ -38,15 +35,13 @@ export class Sorter{
         } catch (error) {
             return;
         }
-        this.timeInExec = -performance.now();
-        await this.render(this.array);
+        // await this.render(this.array);
         this.timeInExec += performance.now();
-        this.ms = this.timeInExec * 1000;
-        this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
-        this.renderLoopHandler = this.renderLoop(1000 / this.frameRate);
+        this.prepareRender();
+        return this;
     } 
 
-    insertionSort = async () => {
+    insertionSort = () => {
         let insertion = () => {
             try {
                 for (let i = 0; i < this.array.length; i++) {
@@ -70,12 +65,11 @@ export class Sorter{
         this.timeInExec = -performance.now();
         insertion();
         this.timeInExec += performance.now();
-        this.ms = this.timeInExec * 1000;
-        this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
-        this.renderLoopHandler = this.renderLoop(1000 / this.frameRate);
+        this.prepareRender();
+        return this;
     }
 
-    quickSort = async () => {
+    quickSort = () => {
         try {
             const quick = (lo, hi) => {
                 if(lo < hi){
@@ -117,17 +111,16 @@ export class Sorter{
                 return i
             }
             this.timeInExec -= performance.now();
-            await quick(0, this.array.length-1);
+            quick(0, this.array.length-1);
             this.timeInExec += performance.now();
         } catch (error) {
             return 0;
         }
-        this.ms = this.timeInExec * 1000;
-        this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
-        this.renderLoopHandler = this.renderLoop(1000/this.frameRate);
+        this.prepareRender();
+        return this;
     }
 
-    mergeSort = async () => {
+    mergeSort = () => {
         const merge = (leftArr, rightArr) => {
             var sortedArr = [];
 
@@ -166,15 +159,15 @@ export class Sorter{
             }
         }
         this.timeInExec -= performance.now();
-        await mergeSortRecursive(this.array);
+        mergeSortRecursive(this.array);
         this.timeInExec += performance.now();
-        this.ms = this.timeInExec * 1000;
-        this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
-        this.renderLoopHandler = this.renderLoop(1000 / this.frameRate);
+        this.prepareRender();
+        return this;
     }
 }
 
 export default class SorterController extends Sorter{
+
     constructor(div, sort, array){
         super();
         this.element = div;
@@ -206,6 +199,15 @@ export default class SorterController extends Sorter{
         clearInterval(this.renderLoopHandler);
         this.array = null;
         this.eventPool = [];
+    }
+
+    renderLoop = (time) => {
+        this.renderLoopHandler = setInterval(async () => {this.render()}, time);
+    }
+
+    prepareRender = () => {
+        this.ms = this.timeInExec * 1000;
+        this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
     }
 
     initialRender = async () => {
