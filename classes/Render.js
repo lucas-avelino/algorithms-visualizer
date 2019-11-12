@@ -18,10 +18,12 @@ const mergeEvents = (events) => {
 
 const tranformEventsInRenderFrames = (eventPool, frameRate, sizeOfAnimation) => {
     const numberOfEvents = eventPool.length;
-    let numberOfFrames = (sizeOfAnimation * frameRate) / 1000 ;
+    let numberOfFrames = sizeOfAnimation > 0
+        ? (sizeOfAnimation * frameRate) / 1000
+        : (1000*frameRate) / 1000;
     const numberOfEventsPerFrame = (numberOfEvents/numberOfFrames);
     let frames = [];
-    for (let i = numberOfEventsPerFrame; i <= numberOfEvents+numberOfEventsPerFrame; i+=numberOfEventsPerFrame) {
+    for (let i = numberOfEventsPerFrame; i <= numberOfEvents+numberOfEventsPerFrame && eventPool.length != 0; i+=numberOfEventsPerFrame) {
          frames.push(mergeEvents(eventPool.slice((i - (numberOfEventsPerFrame) | 0),i | 0)));
     }
     return frames.filter((a) => a != null);

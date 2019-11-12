@@ -11,7 +11,21 @@ $().ready(async () => {
     }
 
     let objects = new Array();
-    $("#runButton").click((e) => {
+
+    $("#runButton").not(".disabled").click(async (e) => {
+        console.log("oi")
+        console.log(document.getElementById("loading"))
+        document.getElementById("loading").style.display = "flex";
+        console.log("oi")
+        // $("#runButton").attr("disabled", true);
+        // $("#runButton").addClass("disabled");
+
+        setTimeout(func,0);
+        // $("#runButton").attr("disabled", false);
+        // $("#runButton").removeClass("disabled");
+    });
+
+    const func = async () => {
         for (let i = 0; i < objects.length; i++) {
             const element = objects[i];
             element.cancel();
@@ -20,21 +34,22 @@ $().ready(async () => {
         $("#display").empty();
 
         const array = genRandomArray($("#numOfItems").val(),0 ,50);
-
+        console.log(`[${performance.now()}]: Ordenando...`)
         objects = $("#sort-algorithms input[type=checkbox]:checked").map((i,element) => {
             return (new SorterController(genDiv(), SortList[element.id], 
                     array.map((el) => {
                         return {...el}
-                    })
+                    }), 30
             ).sort());
         });
-
+        console.log(`[${performance.now()}]: Ordenado!`)
         for (let i = 0; i < objects.length; i++) {
             const element = objects[i];
             console.log(element);
             element.renderLoop(1000/30);
         }
-    });
+        document.getElementById("loading").style.display = "none";
+    }
 
     $("#numOfItems").on("input", (e) => {
         $(this).trigger("change");

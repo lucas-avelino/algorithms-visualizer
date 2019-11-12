@@ -30,6 +30,7 @@ const CreateEvent = (initialState, endState, eventType) => {
         return diff;
     }
 }
+
 const EventType = {
     Movement: 0,
     // Comparassion: 1

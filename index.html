@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html> -->
 <html lang="en">
 
 <head>
@@ -14,10 +14,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/main.css">
     <title>Sort Algorithm</title>
 </head>
 
 <body class="" style="width: 100vw; height: 100vh;">
+    <frame src="./loading.html" id="loading" frameborder="0" style="display: none;"></frame>
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
         <a class="navbar-brand" href="#">Algorithms Vizualizer</a>
         <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
@@ -46,13 +48,13 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <div class="form-group mr-2" style="width: 300px;" >
+                <div class="form-group mr-2" style="width: 300px;">
                     <label for="numOfItems" class="d-flex justify-items-around w-100">
-                        <span class="w-75">Number of elements: </span> 
+                        <span class="w-75">Number of elements: </span>
                         <span class="ml-3 w-25">30</span></label>
                     <input type="range" value="30" min="0" max="1000" class="form-control-range" id="numOfItems" />
                 </div>
-                <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="runButton">
+                <button class="btn btn-success my-2 my-sm-0" type="button" id="runButton">
                     Run
                 </button>
             </form>
