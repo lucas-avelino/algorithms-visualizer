@@ -14,7 +14,10 @@ You can test the "web aplication" on the link bellow:
  - Improvements:
 	- [X] [UX] Interface and render function;
 	- [X] [Rendering] New async render function;
-	- [ ] [Rendering] Merge sort are with a strange render
+
+ - Bugs:
+	- [ ] [Rendering] Identify memory leak that make page break;
+	- [ ] [Rendering] Merge sort are with a strange render;
 
  - Sort algorithms:
 	- [x] Bubble;
