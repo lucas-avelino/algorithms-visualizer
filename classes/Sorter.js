@@ -3,15 +3,10 @@ import sleep from './Util.js'
 import {SortList, CreateEvent, EventType} from './Util.js'
 import tranformEventsInRenderFrames from './Render.js'
 
-export class Sorter{
-    
-    ordered = false;
+export class Sorter {
+    // ordered = false;
 
     eventPool = [];
-
-    renderFrames = [];
-
-    frameRate = 25;
 
     addEvent = async (a, b, c) =>{
         this.eventPool.push(CreateEvent(a, b, c));
@@ -93,7 +88,7 @@ export class Sorter{
                         this.timeInExec += performance.now();
                         this.addEvent(arrayHoldedState, {...this.array}, EventType.Movement);
                         arrayHoldedState = [...this.array];
-                        this.timeInExec -= performance.now()+0.001;
+                        this.timeInExec -= performance.now();
                         // console.timeEnd("[add-event][118]");
                         i++;
                     }
@@ -104,7 +99,7 @@ export class Sorter{
                 this.timeInExec += performance.now();
                 this.addEvent(arrayHoldedState, {...this.array}, EventType.Movement);
                 // console.time("[add-event][118]");
-                this.timeInExec -= performance.now()+0.001;
+                this.timeInExec -= performance.now();
                 // console.timeEnd("[add-event][118]");
                 // this.eventPool.push(CreateEvent(arrayHoldedState, {...this.array}, EventType.Movement));
                 // arrayHoldedState = {...this.array};
@@ -168,8 +163,8 @@ export class Sorter{
 
 export default class SorterController extends Sorter{
 
-    constructor(div, sort, array){
-        super();
+    constructor(div, sort, array,framesPerSecond){
+        super(framesPerSecond);
         this.element = div;
         switch(sort){
             case SortList.bubble:
@@ -191,6 +186,7 @@ export default class SorterController extends Sorter{
         }
         this.array = array;
         this.timeInExec = 0;
+        this.framesPerSecond = framesPerSecond;
         this.initialRender();
         
     }
@@ -201,15 +197,23 @@ export default class SorterController extends Sorter{
         this.eventPool = [];
     }
 
-    renderLoop = (time) => {
-        this.renderLoopHandler = setInterval(async () => {this.render()}, time);
+    //Attributes
+    renderFrames = [];
+    framesPerSecond = 25;
+    ms = 0;
+
+    //Function that starts render 
+    renderLoop = () => {
+        this.renderLoopHandler = setInterval(async () => {this.render()}, 1000/this.framesPerSecond);
     }
 
+    //Function that prepare render and transform the events into frames to be rendered
     prepareRender = () => {
         this.ms = this.timeInExec * 1000;
-        this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.frameRate, this.ms || 1000);
+        this.renderFrames = tranformEventsInRenderFrames(this.eventPool, this.framesPerSecond, this.ms || 1000);
     }
 
+    //Function that render the first state of array
     initialRender = async () => {
         const h = this.element.height();
         const colSize = 100 / this.array.length;
@@ -221,6 +225,7 @@ export default class SorterController extends Sorter{
         });
     }
 
+    //Function that are called by the render loop to render the next frame
     render = async () => {
         if(this.renderFrames == null || this.renderFrames == [] || !this.renderFrames[0]) clearInterval(this.renderLoopHandler);
         const frame = this.renderFrames.shift();

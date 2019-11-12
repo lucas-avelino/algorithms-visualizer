@@ -10,13 +10,15 @@ You can test the "web aplication" on the link bellow:
  - Features:
 	- [ ] [Sorters] Make the arrays editable for users;
 	- [ ] [Sorters] Make the time line bar for user control the render;
+	- [ ] [Sorters] Create a load screen while the arrays are sorted;
 
  - Improvements:
 	- [X] [UX] Interface and render function;
 	- [X] [Rendering] New async render function;
+	- [ ] [Engine] Start using WebWorkers to process the sort function;
 
  - Bugs:
-	- [ ] [Rendering] Identify memory leak that make page break;
+	- [X] [Rendering] Identify and fix memory leak that make page break;
 	- [ ] [Rendering] Merge sort are with a strange render;
 
  - Sort algorithms:

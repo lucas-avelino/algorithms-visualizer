@@ -25,7 +25,7 @@ $().ready(async () => {
             return (new SorterController(genDiv(), SortList[element.id], 
                     array.map((el) => {
                         return {...el}
-                    })
+                    }), 30
             ).sort());
         });
 
