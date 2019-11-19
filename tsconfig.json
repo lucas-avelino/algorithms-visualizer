@@ -1,10 +1,23 @@
 {
     "compilerOptions": {
+		"moduleResolution": "node",
+		"allowJs": true,
+		"noEmit": true,
+		"strict": true,
+		"isolatedModules": true,
+        "esModuleInterop": true,
+        
         "outDir": "./publish",
         "rootDir": "./src",
         // "allowJs": true,
         "module": "commonjs",
         "target": "ES5",
-        "lib": [ "es2015", "es2016" ]
-    }
+        "lib": [
+            "es2015",
+            "es2016"
+        ]
+    },
+    "include": [
+        "src"
+    ]
 }

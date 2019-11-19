@@ -1,0 +1,5 @@
+{
+    "scripts": {
+        "build":"babel ./src/*.ts --out-dir ./publish/" 
+    }
+}
