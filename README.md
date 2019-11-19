@@ -15,6 +15,10 @@ You can test the "web aplication" on the link bellow:
  - Improvements:
 	- [X] [UX] Interface and render function;
 	- [X] [Rendering] New async render function;
+	- [ ] [General] Migration to TypeScript;
+    	- [ ] Install TypeScript Dependencies;
+    	- [ ] Make All code Migrations;
+    	- [ ] Install Babel to compile the solution;
 	- [ ] [Engine] Start using WebWorkers to process the sort function;
 
  - Bugs:
