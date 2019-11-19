@@ -1,15 +1,12 @@
 
-// import sleep from './Util.js'
-// import {SortList, CreateEvent, EventType} from './Util.js'
-import tranformEventsInRenderFrames from './Render.js'
-
+import 'typescript/lib/lib.dom';
 import Item from './objects/Item'
 import Event from './objects/Event'
 import Render from './Render'
 import { EventType } from './objects/Event'
 
 
-const SortList = {
+export const SortList = {
     Bubble:     0,
     Insertion:  1,
     Quick:      2,
@@ -182,11 +179,11 @@ export class Sorter extends Render{
 export default class SorterController extends Sorter{
     typeInExec: string;
     sort: () => SorterController;
-    constructor(div, sort, array, framesPerSecond, element){
-        super(element);
+    constructor(div, sort, array, framesPerSecond){
+        super(div);
 
-        super(framesPerSecond);
-        this.element = div;
+        // super(framesPerSecond);
+        // this.element = div;
         
         switch(sort){
             case SortList.Bubble:
@@ -219,42 +216,4 @@ export default class SorterController extends Sorter{
         this.eventPool = [];
     }
 
-    // //Attributes
-    // renderFrames = [];
-    // framesPerSecond = 25;
-    // ms = 0;
-
-    // //Function that starts render 
-    // renderLoop = () => {
-    //     this.renderLoopHandler = setInterval(async () => {this.render()}, 1000/this.framesPerSecond);
-    // }
-
-    // //Function that prepare render and transform the events into frames to be rendered
-    // prepareRender = () => {
-    //     this.ms = this.timeInExec * 1000;
-    //     this.renderFrames = this.tranformEventsInRenderFrames(this.eventPool, this.framesPerSecond, this.ms || 1000);
-    // }
-
-    // //Function that render the first state of array
-    // initialRender = async (typeInExec: string) => {
-    //     const h = this.element.height();
-    //     const colSize = 100 / this.array.length;
-    //     const unitHSize = h/Math.max(...(this.array.map((a)=>a.value)));
-
-    //     this.element.append(`<h4 style="color:white;position: absolute; top: 0; left: 2px;">${typeInExec}</h4>`);
-    //     this.array.map((item,i) => {
-    //         this.element.append(`<div val="${item.id}" class="bar-item bg-primary" style="color: white; order:${i}; height: ${unitHSize*item.value}px;width: ${colSize}%;"></div>`);
-    //     });
-    // }
-
-    // //Function that are called by the render loop to render the next frame
-    // render = async () => {
-    //     if(this.renderFrames == null || this.renderFrames == [] || !this.renderFrames[0]) clearInterval(this.renderLoopHandler);
-    //     const frame = this.renderFrames.shift();
-    //     if(JSON.stringify(frame) != "{}"){
-    //         for (const key in frame) {
-    //             this.element.children(`.bar-item[val=${frame[key].id}]`).css({"order": key});
-    //         }
-    //     }
-    // }
 }

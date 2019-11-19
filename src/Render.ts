@@ -1,13 +1,14 @@
+import 'typescript/lib/lib.dom';
 import Item from './objects/Item'
 import Event from './objects/Event'
 
 export default class Render{
-    renderFrames = [];
-    framesPerSecond = 25;
-    ms = 0;
-    renderLoopHandler = 0;
-    timeInExec = 1000;
-    element: any;
+    renderFrames: Array<Event> = [];
+    framesPerSecond: number = 25;
+    ms: number = 0;
+    renderLoopHandler: number = 0;
+    timeInExec: number = 1000;
+    element: JQuery;
 
     constructor(element){
         this.element = element;
@@ -15,7 +16,7 @@ export default class Render{
 
     //Function that starts render 
     renderLoop = () => {
-        this.renderLoopHandler = setInterval(async () => {this.render()}, 1000/this.framesPerSecond);
+        this.renderLoopHandler = setInterval(async () => {this.render()}, 1000/this.framesPerSecond) as unknown as number;
     }
 
     //Function that prepare render and transform the events into frames to be rendered
