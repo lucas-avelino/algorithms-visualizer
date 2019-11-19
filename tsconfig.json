@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
+        "outDir": "./publish",
+        "rootDir": "./src",
+        // "allowJs": true,
         "module": "commonjs",
         "target": "ES5",
-        "outDir": "ts-built",
-        "rootDir": "./src",
-        "lib": [ "es2015" ]
-
+        "lib": [ "es2015", "es2016" ]
     }
 }
