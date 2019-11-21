@@ -1,9 +1,9 @@
 
-import Item from './objects/Item'
-import Event from './objects/Event'
-import Render from './Render'
-import { EventType } from './objects/Event'
-import SorterConfig from './objects/Sorter'
+import Item from './objects/Item.js'
+import Event from './objects/Event.js'
+import Render from './Render.js'
+import { EventType } from './objects/Event.js'
+import SorterConfig from './objects/Sorter.js'
 
 
 export const Sorters: {[key: string]: SorterConfig} = {

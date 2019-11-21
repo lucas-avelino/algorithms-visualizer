@@ -1,6 +1,6 @@
-import Item from './objects/Item'
-import Event from './objects/Event'
-import Frame from './objects/Frame';
+import Item from './objects/Item.js'
+import Event from './objects/Event.js'
+import Frame from './objects/Frame.js';
 
 export default class Render{
     renderFrames: Array<Frame> = [];

@@ -1,4 +1,4 @@
-import Item from "./Item"
+import Item from "./Item.js"
 
 export const EventType = {
     Movement: 0,

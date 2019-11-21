@@ -1,6 +1,6 @@
-import SorterController from './SorterController'
-import genRandomArray from './Util'
-import { Sorters } from './SorterController'
+import SorterController from './SorterController.js'
+import genRandomArray from './Util.js'
+import { Sorters } from './SorterController.js'
 
 $().ready(async () => {
     // console.log($("#sort-algorithms input[type=checkbox]"))
@@ -32,8 +32,6 @@ $().ready(async () => {
 
         for (let i = 0; i < objects.length; i++) {
             const element = objects[i];
-            console.log(element);
-            console.log("OI");
             element.renderLoop();
         }
     });
