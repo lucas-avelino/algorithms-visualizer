@@ -1,13 +1,16 @@
 name: Node CI
 
-on: [push]
+on: 
+  push:
+    branches:    
+      - master 
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x]
+        node-version: [12.x]
     steps:
     - uses: actions/checkout@v1
     - name: Use Node.js ${{ matrix.node-version }}
@@ -18,12 +21,18 @@ jobs:
       run: npm install
     - name: NPM build
       run: npm run build --if-present
-    - name: Git config auto deploy
-      run: | 
-        git config --local user.email "lucas.avelino1203@gmail.com"
-        git checkout -b gh-pages
-        git commit -m "Publish" -a
-    - name: Push changes
+    - name: Git set-up
+      run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+    - name: Git commit
+      run: |
+          git checkout gh-pages -f
+          git add ./publish/*
+          git commit -m "Publish " -a
+    - name: Git push changes
       uses: LucasAvelino0509/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB }}
+        branch: gh-pages
+        force: true
