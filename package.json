@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "babel ./src/*.ts --out-dir ./publish/"
+    "build": "bash .bin/babelFolders.sh"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
