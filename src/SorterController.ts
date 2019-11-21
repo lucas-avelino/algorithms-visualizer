@@ -1,25 +1,24 @@
 
-import 'typescript/lib/lib.dom';
 import Item from './objects/Item'
 import Event from './objects/Event'
 import Render from './Render'
 import { EventType } from './objects/Event'
+import SorterConfig from './objects/Sorter'
 
 
-export const SortList = {
-    Bubble:     0,
-    Insertion:  1,
-    Quick:      2,
-    Merge:      3
+export const Sorters: {[key: string]: SorterConfig} = {
+    Bubble: new SorterConfig ( 0, 'Bubble Sort', 'bubbleSort' ),
+    Insertion: new SorterConfig( 1, 'Insertion Sort', 'insertionSort' ),
+    Quick: new SorterConfig( 2, 'Quick Sort', 'quickSort' ),
+    Merge: new SorterConfig( 3, 'Merge Sort', 'mergeSort')
 }
 
+export class SorterLogic extends Render{
+    array: Array<Item> = [];
+    eventPool: Array<Event> = [];
+    timeInExec: number = 0;
 
-export class Sorter extends Render{
-    array: Item[];
-    eventPool: Event[] = [];
-    timeInExec: number;
-
-    constructor(element){
+    constructor(element: JQuery){
         super(element);
     }
 
@@ -176,33 +175,16 @@ export class Sorter extends Render{
     }
 }
 
-export default class SorterController extends Sorter{
-    typeInExec: string;
-    sort: () => SorterController;
-    constructor(div, sort, array, framesPerSecond){
-        super(div);
+export default class SorterController extends SorterLogic{
+    typeInExec: string = "";
+    sort: () => any;
 
-        // super(framesPerSecond);
-        // this.element = div;
-        
-        switch(sort){
-            case SortList.Bubble:
-                this.typeInExec = "Bubble Sort";
-                this.sort = this.bubbleSort;
-                break;
-            case SortList.Insertion:
-                this.typeInExec = "Insertion Sort";
-                this.sort = this.insertionSort;
-                break;
-            case SortList.Quick:
-                this.typeInExec = "Quick Sort";
-                this.sort = this.quickSort;
-                break;
-            case SortList.Merge:
-                this.typeInExec = "Merge Sort";
-                this.sort = this.mergeSort;
-                break;
-        }
+
+    constructor(div: JQuery, sort: SorterConfig, array: Array<Item>, framesPerSecond){
+        super(div);
+        this.typeInExec = sort.label;
+        this.sort = this[sort.functionName];
+
         this.array = array;
         this.timeInExec = 0;
         this.framesPerSecond = framesPerSecond;

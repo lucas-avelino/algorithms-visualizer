@@ -1,32 +1,32 @@
-import 'typescript/lib/lib.dom';
 import Item from './objects/Item'
 import Event from './objects/Event'
+import Frame from './objects/Frame';
 
 export default class Render{
-    renderFrames: Array<Event> = [];
+    renderFrames: Array<Frame> = [];
     framesPerSecond: number = 25;
     ms: number = 0;
     renderLoopHandler: number = 0;
     timeInExec: number = 1000;
     element: JQuery;
 
-    constructor(element){
+    constructor(element: JQuery){
         this.element = element;
     }
 
     //Function that starts render 
     renderLoop = () => {
-        this.renderLoopHandler = setInterval(async () => {this.render()}, 1000/this.framesPerSecond) as unknown as number;
+        this.renderLoopHandler = setInterval(async () => {this.render()}, 1000/this.framesPerSecond) as number;
     }
 
     //Function that prepare render and transform the events into frames to be rendered
-    prepareRender = (eventPool: Event[]) => {
+    prepareRender = (eventPool: Array<Event>) => {
         this.ms = this.timeInExec * 1000;
         this.renderFrames = this.tranformEventsInRenderFrames(eventPool, this.framesPerSecond, this.ms || 1000);
     }
 
     //Function that render the first state of array
-    initialRender = async (array: Item[], name: string) => {
+    initialRender = async (array: Array<Item>, name: string) => {
         const h = this.element.height();
         const colSize = 100 / array.length;
         const unitHSize = h/Math.max(...(array.map((a)=>a.value)));
@@ -39,42 +39,31 @@ export default class Render{
 
     //Function that are called by the render loop to render the next frame
     render = async () => {
-        if(this.renderFrames == null || this.renderFrames == [] || !this.renderFrames[0]) clearInterval(this.renderLoopHandler);
-        const frame = this.renderFrames.shift();
+        if(this.renderFrames == null || this.renderFrames == [] || !this.renderFrames[0]) {
+            clearInterval(this.renderLoopHandler);
+            return;
+        }
+        const frame = this.renderFrames.shift()!.value;
         if(JSON.stringify(frame) != "{}"){
-            for (const key in frame) {
-                this.element.children(`.bar-item[val=${frame[key].id}]`).css({"order": key});
-            }
+            frame.forEach(event => {
+                const value = event.value;
+                for (const key in value) {
+                    this.element.children(`.bar-item[val=${value[key].id}]`).css({"order": key});
+                }
+            });
         }
     }
 
-    mergeEvents = (events: Event[]) => {
-        if(events.length == 0){ return null }
-        const numberOfElements = events.length;
-        let event = events[0];
-        if(event == undefined){
-            return null;
-        }
-        for (let i = 1; i < numberOfElements; i++) {
-            for (const key in events[i]) {
-                if (events[i][key]) {
-                    event[key] = events[i][key]; 
-                }
-            }
-        }
-    
-        return event;
-    }
-    
-    tranformEventsInRenderFrames = (eventPool: Event[], frameRate: number, sizeOfAnimation: number) => {
+    //Function that convert 
+    tranformEventsInRenderFrames = (eventPool: Array<Event>, frameRate: number, sizeOfAnimation: number): Array<Frame> => {
         const numberOfEvents = eventPool.length;
         let numberOfFrames = sizeOfAnimation > 0
             ? (sizeOfAnimation * frameRate) / 1000
             : (1000*frameRate) / 1000;
         const numberOfEventsPerFrame = (numberOfEvents/numberOfFrames);
-        let frames = [];
+        let frames: Array<Frame> = [];
         for (let i = numberOfEventsPerFrame; i <= numberOfEvents+numberOfEventsPerFrame && eventPool.length != 0; i+=numberOfEventsPerFrame) {
-             frames.push(this.mergeEvents(eventPool.slice((i - (numberOfEventsPerFrame) | 0),i | 0)));
+            frames.push(new Frame(eventPool.slice((i - (numberOfEventsPerFrame) | 0),i | 0)));
         }
         return frames.filter((a) => a != null);
     }

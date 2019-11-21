@@ -1,7 +1,6 @@
-import 'typescript/lib/lib.dom';
-import SorterController from './Sorter'
+import SorterController from './SorterController'
 import genRandomArray from './Util'
-import { SortList } from './Sorter'
+import { Sorters } from './SorterController'
 
 $().ready(async () => {
     // console.log($("#sort-algorithms input[type=checkbox]"))
@@ -24,16 +23,17 @@ $().ready(async () => {
         const array = genRandomArray($("#numOfItems").val(),0 ,50);
         
         objects = $("#sort-algorithms input[type=checkbox]:checked").map((i,element) => {
-            return (new SorterController(genDiv(), SortList[element.id], 
-                    array.map((el) => {
+            return (new SorterController(genDiv(), Sorters[element.id], 
+                    array.map((el: any) => {
                         return {...el}
-                    }), 30, 
+                    }), 30 
             ).sort());
         }).toArray();
 
         for (let i = 0; i < objects.length; i++) {
             const element = objects[i];
             console.log(element);
+            console.log("OI");
             element.renderLoop();
         }
     });
