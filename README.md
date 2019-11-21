@@ -1,5 +1,8 @@
 ## Algorithms visualizer
-The pupose of this repository is create a visualisation to how some algorithms works
+The pupose of this repository is create a visualisation to how some algorithms works.
+The project has two versions the v1.0 the languege that I use to code the logic was JavaScript,
+but in v2.0 all the JavaScript was migrated for `TypeScript ^3.7.2`, with npm modules.
+
 The language of the scripts is JavaScript and the libs that I'm using is `JQuery 3.4.1` and `Bootstrap 4.3.1`
  
 You can test the "web aplication" on the link bellow:
@@ -15,10 +18,11 @@ You can test the "web aplication" on the link bellow:
  - Improvements:
 	- [X] [UX] Interface and render function;
 	- [X] [Rendering] New async render function;
-	- [ ] [General] Migration to TypeScript;
-    	- [ ] Install TypeScript Dependencies;
-    	- [ ] Make All code Migrations;
-    	- [ ] Install Babel to compile the solution;
+	- [X] [General] Migration to TypeScript;
+		- [X] Install TypeScript Dependencies;
+		- [X] Make All code Migrations;
+		- [X] Install Babel to compile the solution;
+		- [ ] Create Babel compile Watcher;
 	- [ ] [Engine] Start using WebWorkers to process the sort function;
 
  - Bugs:
