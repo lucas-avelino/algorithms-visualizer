@@ -11,8 +11,7 @@
     "@types/core-js": "^2.5.2",
     "@types/jquery": "^3.3.31",
     "@types/typescript": "^2.0.0",
-    "babel": "^6.23.0",
-    "babel-loader": "^8.0.6",
+    "babel-loader": "^7.0.0",
     "jquery": "^3.4.1",
     "typescript": "^3.7.2"
   }
