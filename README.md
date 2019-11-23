@@ -7,7 +7,7 @@ The language of the scripts is JavaScript and the libs that I'm using is `JQuery
  
 You can test the "web aplication" on the link bellow:
 
-[GitHub WebSite](https://lucasavelino0509.github.io/algorithms-visualizer/)
+[GitHub WebSite](https://lucas-avelino.github.io/algorithms-visualizer/)
 
 ## TODO
  - Features:

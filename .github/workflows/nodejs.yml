@@ -17,21 +17,35 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
     - name: NPM install dependencies
       run: npm install
-    - name: NPM build
-      run: npm run build --if-present
+
     - name: Git set-up
       run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-    - name: Git commit
-      run: |
+
+    - name: Git Merge changes
+      run: | 
           git checkout gh-pages -f
-          git add ./publish/*
-          git commit -m "Publish " -a
+          git merge origin/master -m "merge: master -> gh-pages ~Auto Build Action~"
+
+    - name: NPM build 
+      run: npm run build
+
+    - name: Git commit builded files
+      run: |
+          git add ./publish/* ./index.html 
+          export gitStaged=$(git diff --name-only --cached)
+          if ! grep -q "/" $gitStaged ;
+            then echo "Nothing to commit";
+            else echo "Commiting build changes"\
+              && git commit -m "build: npm added compiled files ~Auto Build Action~" -a;
+          fi;
+
     - name: Git push changes
-      uses: LucasAvelino0509/github-push-action@master
+      uses: lucas-avelino/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB }}
         branch: gh-pages
