@@ -22,7 +22,7 @@ export class SorterLogic extends Render{
         super(element);
     }
 
-    addEvent = async (eventType: number, data: {initialState: Item[], endState: Item[]}) =>{
+    addEvent = async (eventType: number, data: {initialState: Array<Item>, endState: Array<Item>}) =>{
         this.eventPool.push(new Event(eventType, data));
     }
 
@@ -98,12 +98,10 @@ export class SorterLogic extends Render{
                         const aux = this.array[i];
                         this.array[i] = this.array[j];
                         this.array[j] = aux;
-                        // console.time("[add-event][118]");
                         this.timeInExec +=  performance.now();
                         this.addEvent(EventType.Movement, {initialState: arrayHoldedState, endState: {...this.array}});
                         arrayHoldedState = [...this.array];
                         this.timeInExec -=  performance.now();
-                        // console.timeEnd("[add-event][118]");
                         i++;
                     }
                 }
@@ -112,11 +110,7 @@ export class SorterLogic extends Render{
                 this.array[hi] = aux;
                 this.timeInExec +=  performance.now();
                 this.addEvent(EventType.Movement, {initialState: arrayHoldedState, endState: {...this.array}});
-                // console.time("[add-event][118]");
                 this.timeInExec -=  performance.now();
-                // console.timeEnd("[add-event][118]");
-                // this.eventPool.push(CreateEvent(arrayHoldedState, {...this.array}, EventType.Movement));
-                // arrayHoldedState = {...this.array};
                 return i
             }
             this.timeInExec -=  performance.now();
@@ -130,7 +124,7 @@ export class SorterLogic extends Render{
     }
 
     mergeSort = () => {
-        const merge = (leftArr: Item[], rightArr: Item[]) => {
+        const merge = (leftArr: Array<Item>, rightArr: Array<Item>) => {
             var sortedArr = [];
 
             while (leftArr.length && rightArr.length) {
@@ -149,14 +143,14 @@ export class SorterLogic extends Render{
             
                 return sortedArr;
             }
-            const mergeSortRecursive = (arr: Item[]) => {
+            const mergeSortRecursive = (arr: Array<Item>) => {
             try {
                 if (arr.length < 2) {
                     return arr; 
                 }else {
                     var midpoint = Math.floor(arr.length / 2);
-                    var leftArr   = arr.slice(0, midpoint) as Item[];
-                    var rightArr  = arr.slice(midpoint, arr.length) as Item[];
+                    var leftArr   = arr.slice(0, midpoint) as Array<Item>;
+                    var rightArr  = arr.slice(midpoint, arr.length) as Array<Item>;
                     
                     let a = merge(mergeSortRecursive(leftArr), mergeSortRecursive(rightArr)); 
                     this.addEvent(EventType.Movement,{initialState: arr, endState: a});
