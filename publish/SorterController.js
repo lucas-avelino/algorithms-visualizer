@@ -111,8 +111,7 @@ export class SorterLogic extends Render {
           if (this.array[j].value < pivot.value) {
             const aux = this.array[i];
             this.array[i] = this.array[j];
-            this.array[j] = aux; // console.time("[add-event][118]");
-
+            this.array[j] = aux;
             this.timeInExec += performance.now();
             this.addEvent(EventType.Movement, {
               initialState: arrayHoldedState,
@@ -120,8 +119,7 @@ export class SorterLogic extends Render {
               }
             });
             arrayHoldedState = [...this.array];
-            this.timeInExec -= performance.now(); // console.timeEnd("[add-event][118]");
-
+            this.timeInExec -= performance.now();
             i++;
           }
         }
@@ -134,12 +132,8 @@ export class SorterLogic extends Render {
           initialState: arrayHoldedState,
           endState: { ...this.array
           }
-        }); // console.time("[add-event][118]");
-
-        this.timeInExec -= performance.now(); // console.timeEnd("[add-event][118]");
-        // this.eventPool.push(CreateEvent(arrayHoldedState, {...this.array}, EventType.Movement));
-        // arrayHoldedState = {...this.array};
-
+        });
+        this.timeInExec -= performance.now();
         return i;
       };
 
