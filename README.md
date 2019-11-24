@@ -1,5 +1,5 @@
 ## Algorithms visualizer
-The pupose of this repository is create a visualisation to how some algorithms works.
+The purpose of this repository is create a visualisation to how some algorithms works.
 The project has two versions the v1.0 the languege that I use to code the logic was JavaScript,
 but in v2.0 all the JavaScript was migrated for `TypeScript ^3.7.2`, with npm modules.
 

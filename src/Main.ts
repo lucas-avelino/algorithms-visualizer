@@ -2,9 +2,7 @@ import SorterController from './SorterController.js'
 import genRandomArray from './Util.js'
 import { Sorters } from './SorterController.js'
 
-$().ready(async () => {
-    // console.log($("#sort-algorithms input[type=checkbox]"))
-
+$().ready(() => {
     const genDiv = () => {
         const index = $("#display").children().length;
         $("#display").append(`<div class="flex-fill d-flex align-items-end border rounded" style="position: relative; min-height: 400px; min-width: 50%;background-color: black;" id="list${index}"></div>`);
