@@ -1,6 +1,6 @@
 import SorterController from './SorterController.js'
 import genRandomArray from './Util.js'
-import { Sorters } from './SorterController.js'
+import { Sorters, SorterWorkerResponse } from './objects/WorkerCommand.js';
 
 $().ready(() => {
     const genDiv = () => {
@@ -9,29 +9,42 @@ $().ready(() => {
         return $(`#list${index}`);
     }
 
-    let objects: Array<SorterController> = [];
+    let sorters: SorterController[] = [];
     $("#runButton").click((e) => {
-        for (let i = 0; i < objects.length; i++) {
-            const element = objects[i];
+        for (let i = 0; i < sorters.length; i++) {
+            const element = sorters[i];
             element.cancel();
         }
-        objects = [];
+        sorters = [];
         $("#display").empty();
 
         const array = genRandomArray($("#numOfItems").val(),0 ,50);
         
-        objects = $("#sort-algorithms input[type=checkbox]:checked").map((i,element) => {
+        sorters = $("#sort-algorithms input[type=checkbox]:checked").map((i,element) => {
             return (new SorterController(genDiv(), Sorters[element.id], 
                     array.map((el: any) => {
                         return {...el}
-                    }), 30 
+                    }), 30, i
             ).sort());
-        }).toArray();
+        }).toArray() as unknown as SorterController[];
 
-        for (let i = 0; i < objects.length; i++) {
-            const element = objects[i];
+        for (let i = 0; i < sorters.length; i++) {
+            const element = sorters[i];
             element.renderLoop();
         }
+    });
+
+    //Wait for workers calls
+    addEventListener("message", (e) => {
+        console.log("msg received");
+        const workerResponse = JSON.parse(e.data) as SorterWorkerResponse;
+        const controller = sorters.filter(s => s.threadId == workerResponse.threadId)[0];
+        if(controller){
+            controller.sortDone(workerResponse);
+        }else{
+            console.error("Error during to address the worker response");
+        }
+
     });
 
     $("#numOfItems").on("input", (e) => {

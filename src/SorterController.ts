@@ -2,80 +2,45 @@
 import Item from './objects/Item.js'
 import Event from './objects/Event.js'
 import Render from './Render.js'
-import { EventType } from './objects/Event.js'
 import SorterConfig from './objects/Sorter.js'
+import SorterWorkerCommand, { SorterWorkerResponse } from './objects/WorkerCommand.js'
 
-
-export const Sorters: {[key: string]: SorterConfig} = {
-    Bubble: new SorterConfig ( 0, 'Bubble Sort', 'bubbleSort' ),
-    Insertion: new SorterConfig( 1, 'Insertion Sort', 'insertionSort' ),
-    Quick: new SorterConfig( 2, 'Quick Sort', 'quickSort' ),
-    Merge: new SorterConfig( 3, 'Merge Sort', 'mergeSort')
+export enum Status{
+    Builded,
+    WaitingWorker,
+    WaitingRender
 }
+export default class SorterController extends Render{
+    typeInExec: string = "";
+    worker: Worker;
+    config: SorterConfig;
+    threadId: number;
+    status: Status;
+    // timeInExec: number = 1000;
+    eventPool: Event[] = [];
+    array: Item[];
 
-export class SorterLogic extends Render{
-    array: Array<Item> = [];
-    eventPool: Array<Event> = [];
-    timeInExec: number = 0;
+    constructor(div: JQuery, config: SorterConfig, array: Array<Item>, framesPerSecond: number, threadId:number){
+        super(div);
+        this.config = config;
+        this.worker = new Worker("./publish/SorterWorker.js", { type: "module" });
+        this.worker.onmessage = this.sortDone;
+        this.threadId = threadId;
+        this.array = array;
+        this.initialRender(array, config.label);
 
-    constructor(element: JQuery){
-        super(element);
-    }
 
     addEvent = async (eventType: number, data: {initialState: Array<Item>, endState: Array<Item>}) =>{
         this.eventPool.push(new Event(eventType, data));
     }
 
-    bubbleSort = () => {
-        this.timeInExec = - performance.now();
-        try {
-            let arrayHoldedState = [...this.array];
-            for (let i = 0; i < this.array.length; i++) {
-                for(let j = 0; j < this.array.length-i; j++){
-                    if( this.array[i] && this.array[j+1] && this.array[j].value > this.array[j+1].value){
-                        const aux = this.array[j];
-                        this.array[j] = this.array[j+1];
-                        this.array[j+1] = aux;
-                        this.addEvent(EventType.Movement, {initialState: arrayHoldedState, endState: {...this.array}});
-                    }
-                    arrayHoldedState = [...this.array];
-                }
-            }
-        } catch (error) {
-            return;
-        }
-        // await this.render(this.array);
-        this.timeInExec +=  performance.now();
-        this.prepareRender(this.eventPool);
-        return this;
-    } 
-
-    insertionSort = () => {
-        let insertion = () => {
-            try {
-                for (let i = 0; i < this.array.length; i++) {
-                    const key = this.array[i];
-                    let arrayHoldedState = [...this.array];
-                    let j = i - 1;
-                    while (j >= 0 && this.array[j].value > key.value) { 
-                        this.array[j + 1] = this.array[j]; 
-                        j = j - 1; 
-                        this.addEvent(EventType.Movement, {initialState: arrayHoldedState, endState: {...this.array}});
-                        arrayHoldedState = [...this.array];
-                    }
-                    this.array[j + 1] = key; 
-                    this.addEvent(EventType.Movement, {initialState: arrayHoldedState, endState: {...this.array}});
-                    arrayHoldedState = [...this.array];
-                }
-            } catch (error) {
-                return;
-            }
-        }
-        this.timeInExec = - performance.now();
-        insertion();
-        this.timeInExec +=  performance.now();
-        this.prepareRender(this.eventPool);
-        return this;
+    sort = () => {
+        this.worker.postMessage(
+            JSON.stringify(
+                new SorterWorkerCommand(this.threadId, this.config, this.array)
+            )
+        );
+        this.status = Status.WaitingWorker;
     }
 
     quickSort = () => {
@@ -165,31 +130,14 @@ export class SorterLogic extends Render{
         mergeSortRecursive(this.array);
         this.timeInExec +=  performance.now();
         this.prepareRender(this.eventPool);
-        return this;
-    }
-}
-
-export default class SorterController extends SorterLogic{
-    typeInExec: string = "";
-    sort: () => any;
-
-
-    constructor(div: JQuery, sort: SorterConfig, array: Array<Item>, framesPerSecond){
-        super(div);
-        this.typeInExec = sort.label;
-        this.sort = this[sort.functionName];
-
-        this.array = array;
-        this.timeInExec = 0;
-        this.framesPerSecond = framesPerSecond;
-        this.initialRender(this.array, this.typeInExec);
-        
+        this.status = Status.WaitingRender;
+        console.log(this);
+        this.worker.terminate();
     }
 
     cancel = () => {
-        clearInterval(this.renderLoopHandler);
-        this.array = null;
-        this.eventPool = [];
+        this.worker.terminate();
+        //clearInterval(this.renderLoopHandler);
     }
 
 }
