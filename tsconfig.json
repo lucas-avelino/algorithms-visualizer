@@ -15,8 +15,11 @@
         "target": "ES5",
         "lib": [
             "es2018",
-            "dom"
+            "dom",
+            "WebWorker.ImportScripts",
+            "WebWorker"
         ],
+        "types":["node","jquery"],
         "typeRoots": [
             "node_modules/@types"
         ],
