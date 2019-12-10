@@ -3,7 +3,7 @@ name: Node CI
 on: 
   push:
     branches:    
-      - master 
+      - gh-pages 
 
 jobs:
   build:
@@ -26,10 +26,10 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-    - name: Git Merge changes
-      run: | 
-          git checkout gh-pages -f
-          git merge origin/master -m "merge: master -> gh-pages ~Auto Build Action~"
+    # - name: Git Merge changes
+    #   run: | 
+    #       git checkout gh-pages -f
+    #       git merge origin/master -m "merge: master -> gh-pages ~Auto Build Action~"
 
     - name: NPM build 
       run: npm run build
