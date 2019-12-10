@@ -9,7 +9,7 @@
         "noImplicitAny": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "outDir": "./publish",
+        "outDir": "./dist",
         "rootDir": "./src",
         "module": "es2015",
         "target": "ES5",

@@ -4,7 +4,7 @@ compileDir () {
         case $d in 
             *.ts)
                 echo $d
-                a="${d//'src'/'publish'}"
+                a="${d//'src'/'dist'}"
                 a=${a//".ts"/'.js'}
                 ./node_modules/.bin/babel $d --out-file $a --extensions
                 ;;
